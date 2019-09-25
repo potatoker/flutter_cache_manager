@@ -17,6 +17,7 @@ import 'package:convert/convert.dart';
 ///Flutter Cache Manager
 ///Copyright (c) 2019 Rene Floor
 ///Released under MIT License.
+///weired
 
 class DefaultCacheManager extends BaseCacheManager {
   static const key = "libCachedImageData";

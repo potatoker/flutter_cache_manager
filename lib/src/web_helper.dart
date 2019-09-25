@@ -16,6 +16,8 @@ import 'package:convert/convert.dart';
 ///Copyright (c) 2019 Rene Floor
 ///Released under MIT License.
 
+///weired
+
 class WebHelper {
   CacheStore _store;
   FileFetcher _fileFetcher;
