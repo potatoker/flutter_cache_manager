@@ -1,5 +1,6 @@
 // HINT: Unnecessary import. Future and Stream are available via dart:core.
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -11,7 +12,8 @@ import 'package:flutter_cache_manager/src/web_helper.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:crypto/crypto.dart' as crypto;
+import 'package:convert/convert.dart';
 ///Flutter Cache Manager
 ///Copyright (c) 2019 Rene Floor
 ///Released under MIT License.
@@ -152,7 +154,7 @@ abstract class BaseCacheManager {
       String fileExtension = "file"}) async {
     var cacheObject = await store.retrieveCacheData(url);
     if (cacheObject == null) {
-      var relativePath = "${new Uuid().v1()}.$fileExtension";
+      var relativePath = "${generateMd5(url)}.$fileExtension";
       cacheObject = new CacheObject(url, relativePath: relativePath);
     }
     cacheObject.validTill = DateTime.now().add(maxAge);
@@ -181,5 +183,12 @@ abstract class BaseCacheManager {
   /// Removes all files from the cache
   emptyCache() async {
     await store.emptyCache();
+  }
+
+  generateMd5(String data) {
+    var content = new Utf8Encoder().convert(data);
+    var md5 = crypto.md5;
+    var digest = md5.convert(content);
+    return hex.encode(digest.bytes);
   }
 }
