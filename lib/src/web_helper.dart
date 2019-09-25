@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_cache_manager/src/cache_object.dart';
@@ -7,7 +8,9 @@ import 'package:flutter_cache_manager/src/file_fetcher.dart';
 import 'package:flutter_cache_manager/src/file_info.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
-import 'package:uuid/uuid.dart';
+import 'package:crypto/crypto.dart' as crypto;
+import 'package:convert/convert.dart';
+
 
 ///Flutter Cache Manager
 ///Copyright (c) 2019 Rene Floor
@@ -106,6 +109,13 @@ class WebHelper {
     return false;
   }
 
+  generateMd5(String data) {
+    var content = new Utf8Encoder().convert(data);
+    var md5 = crypto.md5;
+    var digest = md5.convert(content);
+    return hex.encode(digest.bytes);
+  }
+
   _setDataFromHeaders(
       CacheObject cacheObject, FileFetcherResponse response) async {
     //Without a cache-control header we keep the file for a week
@@ -145,7 +155,7 @@ class WebHelper {
     }
 
     if (cacheObject.relativePath == null) {
-      cacheObject.relativePath = "${new Uuid().v1()}$fileExtension";
+      cacheObject.relativePath = "${generateMd5(cacheObject.url)}$fileExtension";
     }
   }
 
